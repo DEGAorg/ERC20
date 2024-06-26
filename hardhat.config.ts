@@ -14,6 +14,10 @@ const config: HardhatUserConfig = {
       url: `https://bsc-testnet.public.blastapi.io`, 
       accounts: [PRIVATE_KEY], 
     }, 
+    bnb_mainnet: { 
+      url: `https://binance.llamarpc.com`, 
+      accounts: [PRIVATE_KEY], 
+    }, 
   },
   etherscan: {
     apiKey: ETHERSCAN_API_KEY,

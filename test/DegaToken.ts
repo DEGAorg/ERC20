@@ -22,14 +22,14 @@ describe("DegaToken", function () {
     expect(ownerBalance).to.equal(totalSupply);
   });
 
-  // // Cannot test minting because function does not exists
-  // it("Should not allow minting more tokens", async function () {
-  //   const { degaToken, owner } = await deployDegaTokenFixture();
-  //   const mintFunction = async () => {
-  //     await degaToken.mint(owner.address, 1000);
-  //   };
-  //   await expect(mintFunction()).to.be.reverted;
-  // });
+  // Cannot test minting because function does not exists
+  it("Should not allow minting more tokens", async function () {
+    const { degaToken, owner } = await deployDegaTokenFixture();
+    const mintFunction = async () => {
+      await degaToken.mint(owner.address, 1000);
+    };
+    await expect(mintFunction()).to.be.reverted;
+  });
 
   it("Should allow burning of tokens", async function () {
     const { degaToken, owner } = await deployDegaTokenFixture();

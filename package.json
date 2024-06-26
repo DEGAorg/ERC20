@@ -1,9 +1,9 @@
 {
-  "name": "ERC20",
+  "name": "DEGA ERC20",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "https://github.com/DEGAorg/ERC20.git",
-  "author": "Pavel Espitia <pavelespitia@gmail.com>",
+  "author": "DEGA ORG",
   "license": "MIT",
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",

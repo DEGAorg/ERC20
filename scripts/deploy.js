@@ -23,26 +23,17 @@ async function main() {
     ethers.formatEther(await ethers.provider.getBalance(deployerAddress))
   );
 
-  // Define the multisig wallet address where the tokens will be sent
-  const multisigAddress = "0x6E02E0fDD9cf5c45D0679390f33B20d3A727e1A0."; // Replace with the desired multisig wallet address
-
   // Define the token configuration
   const tokenName = "DegaToken";
-  const tokenSymbol = "DEGA";
-  const tokenDecimals = 18;
-  const tokenInitialSupply = ethers.utils.parseEther("37500000000");
+  
+  const tokenInitialSupply = ethers.parseEther("37500000000");
 
   // Deploy the token contract
   const Token = await ethers.getContractFactory(tokenName);
-  const token = await Token.deploy(tokenName, tokenSymbol, tokenDecimals, tokenInitialSupply);
+  const token = await Token.deploy(tokenInitialSupply);
   await token.waitForDeployment();
 
   console.log(`${tokenName} address:`, await token.getAddress());
-
-  // Transfer the tokens to the multisig wallet
-  await token.transfer(multisigAddress, tokenInitialSupply);
-
-  console.log(`Tokens transferred to ${multisigAddress}`);
 
   // Verify the contract
   console.log("\b\n Verifying Contract");

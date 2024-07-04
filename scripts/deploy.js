@@ -26,11 +26,12 @@ async function main() {
   // Define the token configuration
   const tokenName = "DegaToken";
   
+  const multiSigAddress = "0x";
   const tokenInitialSupply = ethers.parseEther("37500000000");
 
   // Deploy the token contract
   const Token = await ethers.getContractFactory(tokenName);
-  const token = await Token.deploy(tokenInitialSupply);
+  const token = await Token.deploy(tokenInitialSupply, multiSigAddress);
   await token.waitForDeployment();
 
   console.log(`${tokenName} address:`, await token.getAddress());

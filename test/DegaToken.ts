@@ -12,7 +12,7 @@ describe("DegaToken", function () {
     DegaToken = await ethers.getContractFactory("DegaToken");
     [owner, addr1] = await ethers.getSigners();
 
-    const degaToken = await ethers.deployContract("DegaToken", [ethers.parseEther("100000000")]);
+    const degaToken = await ethers.deployContract("DegaToken", [ethers.parseEther("100000000"), owner.address]);
 
     return { degaToken, owner, addr1 };
   }
@@ -27,7 +27,7 @@ describe("DegaToken", function () {
   it("Should not allow minting more tokens", async function () {
     const { degaToken, owner } = await deployDegaTokenFixture();
     const mintFunction = async () => {
-      // await degaToken.mint(owner.address, 1000);
+      await degaToken.mint(owner.address, 1000);
     };
     await expect(mintFunction()).to.be.reverted;
   });
@@ -54,5 +54,25 @@ describe("DegaToken", function () {
     const { degaToken } = await deployDegaTokenFixture();
     const decimals = await degaToken.decimals();
     expect(decimals).to.equal(18);
+  });
+
+  it("Should have correct ownership", async function () {
+    const { degaToken, owner, addr1 } = await deployDegaTokenFixture();
+    expect(await degaToken.owner()).to.equal(owner.address);
+  });
+  it("Should transfer ownership", async function () {
+    const { degaToken, owner, addr1 } = await deployDegaTokenFixture();
+    await degaToken.transferOwnership(addr1.address);
+    expect(await degaToken.owner()).to.equal(addr1.address);
+  });
+
+  it("Should prevent non-owners from transferring ownership", async function () {
+    const { degaToken, addr1 } = await deployDegaTokenFixture();
+    await expect(degaToken.connect(addr1).transferOwnership(addr1.address)).to.be.revertedWithCustomError(DegaToken, "OwnableUnauthorizedAccount");
+  });
+
+  it("Should prevent from burning without tokens", async function () {
+    const { degaToken, addr1 } = await deployDegaTokenFixture();
+    await expect(degaToken.connect(addr1).burn(ethers.parseEther("100"))).to.be.revertedWithCustomError(DegaToken, "ERC20InsufficientBalance");
   });
 });

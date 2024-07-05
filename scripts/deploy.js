@@ -41,6 +41,7 @@ async function main() {
 
   await hre.run("verify:verify", {
     address: await token.getAddress(),
+    constructorArguments: [tokenInitialSupply, multiSigAddress],
   });
 
   console.log("\b\n Contract Verified");

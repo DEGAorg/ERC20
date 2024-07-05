@@ -11,7 +11,7 @@ const config: HardhatUserConfig = {
   solidity: "0.8.24",
   networks: {
     bnb_testnet: { 
-      url: `https://bsc-testnet.public.blastapi.io`, 
+      url: `https://public.stackup.sh/api/v1/node/bsc-testnet`, 
       accounts: [PRIVATE_KEY], 
     }, 
     bnb_mainnet: { 

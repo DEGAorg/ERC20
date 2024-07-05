@@ -27,9 +27,20 @@ describe("DegaToken", function () {
   it("Should not allow minting more tokens", async function () {
     const { degaToken, owner } = await deployDegaTokenFixture();
     const mintFunction = async () => {
-      await degaToken.mint(owner.address, 1000);
+      try {
+        await (degaToken as any).mint(owner.address, 1000);
+        return false
+      } catch (error: any) {
+        if (error.message.includes("degaToken.mint is not a function")) {
+          console.log(`Error: ${error.message}`);
+          console.log(`Capture mint error and return value for test confirmation`);
+          return true
+        }
+        return false
+      }
     };
-    await expect(mintFunction()).to.be.reverted;
+    const result = await mintFunction();
+    expect(result).to.be.true;
   });
 
   it("Should allow burning of tokens", async function () {

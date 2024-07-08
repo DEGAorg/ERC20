@@ -71,13 +71,18 @@ describe("DegaToken", function () {
     const { degaToken, owner, addr1 } = await deployDegaTokenFixture();
     expect(await degaToken.owner()).to.equal(owner.address);
   });
-  it("Should transfer ownership", async function () {
+
+  it("Should initiate and complete ownership transfer", async function () {
     const { degaToken, owner, addr1 } = await deployDegaTokenFixture();
     await degaToken.transferOwnership(addr1.address);
+    expect(await degaToken.pendingOwner()).to.equal(addr1.address);
+
+    await degaToken.connect(addr1).acceptOwnership();
     expect(await degaToken.owner()).to.equal(addr1.address);
+    expect(await degaToken.pendingOwner()).to.equal(ethers.ZeroAddress);
   });
 
-  it("Should prevent non-owners from transferring ownership", async function () {
+  it("Should prevent non-owners from initiating ownership transfer", async function () {
     const { degaToken, addr1 } = await deployDegaTokenFixture();
     await expect(degaToken.connect(addr1).transferOwnership(addr1.address)).to.be.revertedWithCustomError(DegaToken, "OwnableUnauthorizedAccount");
   });

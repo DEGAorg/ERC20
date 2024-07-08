@@ -6,10 +6,11 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract DegaToken is ERC20, ERC20Burnable, Ownable {
-    constructor()
-        ERC20("$DEGA", "$DEGA")
-        Ownable(msg.sender)
+    constructor(uint256 _initialSupply, address _owner)
+        ERC20("DEGA", "DEGA")
+        Ownable(_owner)
     {
-        _mint(msg.sender, 37500000000 * 10 ** decimals());
+        _mint(_owner, _initialSupply);
     }
+
 }

@@ -9,36 +9,44 @@ async function main() {
     console.warn(
       "You are trying to deploy a contract to the Hardhat Network, which" +
         "gets automatically created and destroyed every time. Use the Hardhat" +
-        " option '--network localhost'"
+        "option '--network localhost'"
     );
   }
 
   // ethers is available in the global scope
   const [deployer] = await ethers.getSigners();
-  const address = await deployer.getAddress();
-  console.log("Deploying the contracts with the account:", address);
+  const deployerAddress = await deployer.getAddress();
+  console.log("Deploying the contracts with the account:", deployerAddress);
 
   console.log(
     "Account balance:",
-    ethers.formatEther(await ethers.provider.getBalance(address))
+    ethers.formatEther(await ethers.provider.getBalance(deployerAddress))
   );
 
-  const Token = await ethers.getContractFactory("DegaToken");
-  const token = await Token.deploy();
+  // Define the token configuration
+  const tokenName = "DegaToken";
+  
+  const multiSigAddress = "0x";
+  const tokenInitialSupply = ethers.parseEther("37500000000");
+
+  // Deploy the token contract
+  const Token = await ethers.getContractFactory(tokenName);
+  const token = await Token.deploy(tokenInitialSupply, multiSigAddress);
   await token.waitForDeployment();
 
-  console.log("Token address:", await token.getAddress());
+  console.log(`${tokenName} address:`, await token.getAddress());
 
+  // Verify the contract
   console.log("\b\n Verifying Contract");
 
   await hre.run("verify:verify", {
     address: await token.getAddress(),
+    constructorArguments: [tokenInitialSupply, multiSigAddress],
   });
-
 
   console.log("\b\n Contract Verified");
 
-  // We also save the contract's artifacts and address in the frontend directory
+  // Save the contract's artifacts and address in the frontend directory
   saveFrontendFiles(token);
 }
 
@@ -58,20 +66,20 @@ function saveFrontendFiles(token) {
 
   fs.writeFileSync(
     path.join(contractsDir, "contract-address.json"),
-    JSON.stringify({ Token: token.address }, undefined, 2)
+    JSON.stringify({ [token.contractName]: token.address }, undefined, 2)
   );
 
-  const TokenArtifact = artifacts.readArtifactSync("DegaToken");
+  const TokenArtifact = artifacts.readArtifactSync(token.contractName);
 
   fs.writeFileSync(
-    path.join(contractsDir, "DegaToken.json"),
+    path.join(contractsDir, `${token.contractName}.json`),
     JSON.stringify(TokenArtifact, null, 2)
   );
 }
 
 main()
-  .then(() => process.exit(0))
-  .catch((error) => {
+ .then(() => process.exit(0))
+ .catch((error) => {
     console.error(error);
     process.exit(1);
   });
